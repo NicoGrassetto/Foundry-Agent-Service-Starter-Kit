@@ -1,0 +1,13 @@
+# yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
+name: dressmate
+metadata:
+  template: DressMate@0.0.1
+
+infra:
+  provider: bicep
+  path: infra
+
+hooks:
+  postprovision:
+    shell: sh
+    run: hooks/postprovision.sh

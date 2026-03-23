@@ -24,6 +24,9 @@ param modelVersion string = '2024-08-06'
 @description('Deployment capacity (thousands of tokens per minute)')
 param deploymentCapacity int = 30
 
+@description('Name of the Bing Grounding resource')
+param bingGroundingName string = 'dressmate-bing-${uniqueSuffix}'
+
 // Storage account for Agent Service state (threads, files, code interpreter)
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
   name: storageAccountName
@@ -137,6 +140,34 @@ resource project 'Microsoft.CognitiveServices/accounts/projects@2025-04-01-previ
   ]
 }
 
+// Bing Grounding resource for web search tool
+resource bingGrounding 'Microsoft.Bing/accounts@2020-06-10' = {
+  name: bingGroundingName
+  location: 'global'
+  kind: 'Bing.Grounding'
+  sku: {
+    name: 'G1'
+  }
+}
+
+// Connection from AI Services to Bing Search (for Bing Grounding tool)
+resource bingConnection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {
+  parent: aiServices
+  name: 'dressmate-bing'
+  properties: {
+    category: 'ApiKey'
+    authType: 'ApiKey'
+    target: 'https://api.bing.microsoft.com/'
+    isSharedToAll: true
+    credentials: {
+      key: bingGrounding.listKeys().key1
+    }
+    metadata: {
+      type: 'bing_grounding'
+    }
+  }
+}
+
 // GPT-4o model deployment for the agent
 resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2025-04-01-preview' = {
   parent: aiServices
@@ -168,3 +199,9 @@ output deploymentName string = modelDeployment.name
 
 @description('Storage account name')
 output storageAccountNameOutput string = storageAccount.name
+
+@description('Bing connection name for Bing Grounding tool')
+output bingConnectionName string = bingConnection.name
+
+@description('Bing connection ID for the agent SDK (project-scoped)')
+output bingConnectionId string = '${project.id}/connections/${bingConnection.name}'

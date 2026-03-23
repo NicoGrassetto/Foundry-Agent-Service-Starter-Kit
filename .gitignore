@@ -8,6 +8,9 @@ build/
 venv/
 env/
 
+# Azure Developer CLI
+.azure/
+
 # Environment
 .env
 
