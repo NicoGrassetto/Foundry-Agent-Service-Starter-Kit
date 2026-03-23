@@ -7,13 +7,13 @@ param location string = resourceGroup().location
 param uniqueSuffix string = uniqueString(resourceGroup().id)
 
 @description('Name of the AI Services account (AI Foundry hub)')
-param aiServicesName string = 'dressmate-ai-${uniqueSuffix}'
+param aiServicesName string = 'agent-ai-${uniqueSuffix}'
 
 @description('Name of the AI Foundry project')
-param projectName string = 'dressmate-project'
+param projectName string = 'agent-project'
 
 @description('Name of the storage account for agent state')
-param storageAccountName string = 'dmstr${uniqueSuffix}'
+param storageAccountName string = 'agentstr${uniqueSuffix}'
 
 @description('Model to deploy for the agent')
 param modelName string = 'gpt-4o'
@@ -25,7 +25,7 @@ param modelVersion string = '2024-08-06'
 param deploymentCapacity int = 30
 
 @description('Name of the Bing Grounding resource')
-param bingGroundingName string = 'dressmate-bing-${uniqueSuffix}'
+param bingGroundingName string = 'agent-bing-${uniqueSuffix}'
 
 // Storage account for Agent Service state (threads, files, code interpreter)
 resource storageAccount 'Microsoft.Storage/storageAccounts@2023-05-01' = {
@@ -87,7 +87,7 @@ resource storageBlobRoleAssignment 'Microsoft.Authorization/roleAssignments@2022
 // Connection from AI Services to the storage account (for Agent Service)
 resource storageConnection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {
   parent: aiServices
-  name: 'dressmate-storage'
+  name: 'agent-storage'
   properties: {
     category: 'AzureBlob'
     authType: 'AAD'
@@ -104,7 +104,7 @@ resource storageConnection 'Microsoft.CognitiveServices/accounts/connections@202
 // Capability host for Agent Service (enables the agents data plane)
 resource capabilityHost 'Microsoft.CognitiveServices/accounts/capabilityHosts@2025-04-01-preview' = {
   parent: aiServices
-  name: 'dressmate-agent-host'
+  name: 'agent-capability-host'
   properties: {
     capabilityHostKind: 'Agents'
     storageConnections: [
@@ -153,7 +153,7 @@ resource bingGrounding 'Microsoft.Bing/accounts@2020-06-10' = {
 // Connection from AI Services to Bing Search (for Bing Grounding tool)
 resource bingConnection 'Microsoft.CognitiveServices/accounts/connections@2025-04-01-preview' = {
   parent: aiServices
-  name: 'dressmate-bing'
+  name: 'agent-bing'
   properties: {
     category: 'ApiKey'
     authType: 'ApiKey'

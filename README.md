@@ -1,25 +1,29 @@
-# DressMate – Azure AI Agent Service Prototype
+# Foundry Agent Service Starter Kit
 
-A personal styling assistant powered by **Azure AI Agent Service**. The agent uses GPT-4o with a custom wardrobe query tool and vision capabilities to help users pick outfits based on their actual clothing inventory.
+A starter template for building AI agents with **Azure AI Foundry Agent Service**. Comes pre-wired with four built-in tools (Function, Code Interpreter, File Search, Bing Grounding), Bicep infrastructure-as-code, and `azd` deployment automation.
 
 ## Project Structure
 
 ```
-DressMate/
 ├── infra/
-│   ├── main.bicep            # Azure infrastructure (AI Services, storage, capability host)
+│   ├── main.bicep            # Azure infrastructure (AI Services, Storage, Bing Grounding)
 │   └── main.bicepparam       # Parameter values
 ├── src/
 │   ├── __init__.py
-│   ├── agent.py              # Agent CLI (interactive conversation loop)
+│   ├── config.py             # Centralised configuration from env
+│   ├── setup.py              # One-time agent creation (writes AGENT_ID to .env)
+│   ├── main.py               # CLI entry point (interactive conversation loop)
+│   ├── agents/
+│   │   ├── __init__.py
+│   │   └── agent.py          # Agent factory, retrieval, and toolset builder
+│   ├── prompts/
+│   │   └── agent.prompty     # System prompt (Prompty format)
 │   └── tools/
 │       ├── __init__.py
-│       └── wardrobe.py       # Wardrobe query function tool
-├── tests/
-│   ├── __init__.py
-│   ├── test_agent.py         # Integration test (hits Azure)
-│   ├── test_tools.py         # Unit tests (no credentials needed)
-│   └── test_vision.py        # Vision test (image analysis)
+│       └── sample_data.py    # Sample Function tool (in-memory data query)
+├── hooks/
+│   └── postprovision.sh      # Auto-writes .env after azd provision
+├── azure.yaml                # azd project descriptor
 ├── .env.example
 ├── .gitignore
 ├── requirements.txt
@@ -30,27 +34,38 @@ DressMate/
 
 - An **Azure subscription**
 - [Azure CLI](https://learn.microsoft.com/cli/azure/install-azure-cli) installed and signed in
+- [Azure Developer CLI (`azd`)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) (optional, for one-command deploy)
 - Python 3.9+
 
-## 1. Deploy Infrastructure
+## Quick Start with `azd`
 
 ```bash
-az group create --name dressmate-rg --location eastus
+azd up                  # provisions infra + writes .env via post-provision hook
+python -m src.setup     # creates the agent on the service, saves AGENT_ID to .env
+python -m src.main      # runs the conversation loop against the persisted agent
+```
+
+## Manual Setup
+
+### 1. Deploy Infrastructure
+
+```bash
+az group create --name my-agent-rg --location eastus
 
 az deployment group create \
-  --resource-group dressmate-rg \
+  --resource-group my-agent-rg \
   --template-file infra/main.bicep \
   --parameters infra/main.bicepparam
 ```
 
-## 2. Configure Environment
+### 2. Configure Environment
 
 ```bash
 cp .env.example .env
-# Set AZURE_AI_ENDPOINT to: https://<ai-services-name>.services.ai.azure.com/api/projects/<project-name>
+# Fill in AZURE_AI_ENDPOINT and BING_CONNECTION_ID from deployment outputs
 ```
 
-## 3. Install & Run
+### 3. Install & Create Agent
 
 ```bash
 python -m venv .venv
@@ -58,16 +73,41 @@ source .venv/bin/activate
 pip install -r requirements.txt
 
 az login
-python -m src.agent
+python -m src.setup     # creates agent, writes AGENT_ID to .env
 ```
 
-## 4. Run Tests
+### 4. Run
 
 ```bash
-python -m tests.test_tools    # Unit tests (offline, fast)
-python -m tests.test_agent    # Integration test (requires Azure)
-python -m tests.test_vision   # Vision test (requires Azure + image.png in project root)
+python -m src.main      # reuses the persisted agent — no re-creation
 ```
+
+## Built-in Tools
+
+| Tool | Description |
+|---|---|
+| **Function** | Custom Python function called by the agent (sample: `query_items`) |
+| **Code Interpreter** | Sandboxed Python execution for data analysis and calculations |
+| **File Search** | Managed RAG over uploaded documents (vector store) |
+| **Bing Grounding** | Web search for real-time information |
+
+## Customising the Agent
+
+1. **System prompt** — Edit [src/prompts/agent.prompty](src/prompts/agent.prompty)
+2. **Function tool** — Replace `src/tools/sample_data.py` with your own domain logic
+3. **Agent name** — Set `AGENT_NAME` in `.env`
+4. **Model** — Set `MODEL_NAME` in `.env` (default: `gpt-4o`)
+
+## Infrastructure
+
+Bicep deploys:
+
+| Resource | Purpose |
+|---|---|
+| Azure AI Services (S0) | AI Foundry hub + Agent Service data plane |
+| Storage Account (LRS) | Thread state, files, vector stores |
+| Bing Grounding (G1) | Web search for the Bing Grounding tool |
+| GPT-4o deployment | Model used by the agent |
 
 ---
 
@@ -75,62 +115,26 @@ python -m tests.test_vision   # Vision test (requires Azure + image.png in proje
 
 ### Azure AI Agent Service
 
-The Agent Service itself has **two cost components**:
+| Component | Price (East US) |
+|---|---|
+| **Model tokens** | $2.50 / 1M input, $10.00 / 1M output (GPT-4o) |
+| **Agent orchestration** | Free (thread management, tool dispatch) |
 
-| Component | What you pay for | Price (East US) |
-|---|---|---|
-| **Model tokens** | Input + output tokens consumed by GPT-4o during agent runs | $2.50 / 1M input tokens, $10.00 / 1M output tokens |
-| **Agent session storage** | Thread state, messages, and file storage managed by the service | Included with the underlying storage account (standard blob rates) |
+### Built-in Tools
 
-There is **no separate per-run or per-agent fee** — you pay for the model tokens used and the storage consumed, same as calling the model directly. The Agent Service orchestration layer (thread management, tool dispatch, polling) is free.
+| Tool | Cost |
+|---|---|
+| **Code Interpreter** | $0.03 / session |
+| **File Search** | $0.10 / GB vector store / day (first 1 GB free) |
+| **Bing Grounding** | $5.00 / 1K transactions |
+| **Function** | Free (runs in your process) |
 
-### Built-in Tools Pricing
+### Infrastructure (idle)
 
-| Tool | Additional cost | Details |
-|---|---|---|
-| **Code Interpreter** | **$0.03 / session** | Charged per code execution session. A session stays alive for ~1 hour. Each session includes a sandboxed container with compute. |
-| **File Search** | **$0.10 / GB of vector store / day** (first 1 GB free) | Charged based on vector store size. Includes chunking, embedding, indexing, and retrieval. No per-query cost beyond model tokens. |
-| **Bing Grounding** | **$5.00 / 1K transactions** (Bing Search S1) | Requires a Bing Search resource. Each agent search query = 1 transaction. Plus model tokens to process results. |
-| **Azure AI Search** | **AI Search resource pricing** (Free tier available, Basic from ~$75/mo) | You pay for the AI Search resource — the tool connection itself is free. |
-| **Azure Functions** | **Azure Functions consumption pricing** | First 1M executions/month free, then $0.20/1M. Plus compute time ($0.000016/GB-s). |
-| **OpenAPI** | **Free** (tool itself) | No charge for the tool — you pay only for the external API you're calling plus model tokens. |
-| **Connected Agent** | **Free** (tool itself) | No charge for orchestration — you pay for the tokens consumed by the connected agent's model. |
-| **Function (custom)** | **Free** | Runs in your process. No Azure charge — just model tokens for the tool call + response. |
-| **Vision (image input)** | **Token-based** | Images are converted to tokens. ~765 tokens (low detail) or ~1,105 tokens (high detail 512×512 tile). Priced at the standard input token rate. |
+| Resource | Estimated monthly cost |
+|---|---|
+| Azure AI Services (S0) | $0 base (pay per token) |
+| Storage Account (LRS) | ~$0.02 / GB / month |
+| **Total fixed cost** | **< $1 / month** |
 
-### Example: What DressMate Costs
-
-A typical conversation (5 turns, wardrobe tool called each turn):
-- ~2,000 input tokens + ~1,500 output tokens per turn
-- 5 turns = ~10,000 input + ~7,500 output tokens
-- **Cost: ~$0.10 per conversation**
-
-Add vision (1 image upload): +~1,000 input tokens = **~$0.003 extra**
-
-### Infrastructure Costs (idle)
-
-| Resource | SKU | Estimated monthly cost |
-|---|---|---|
-| Azure AI Services (S0) | Pay-per-use | $0 base (pay per token) |
-| Storage Account (LRS) | Standard | ~$0.02/GB/month |
-| **Total fixed cost** | | **< $1/month** (idle) |
-
-> **Note:** Prices are approximate and based on East US region as of early 2026. Check [Azure pricing](https://azure.microsoft.com/pricing/) for current rates. GPT-4o-mini is significantly cheaper than GPT-4o if cost is a concern.
-
----
-
-## How It Works
-
-1. **Infrastructure** – Bicep deploys an Azure AI Services account with a capability host (Agent Service data plane), storage account, and GPT-4o deployment.
-2. **Agent creation** – The `azure-ai-agents` SDK creates a named agent with a system prompt and the `query_wardrobe` function tool.
-3. **Conversation loop** – Each user message is added to a persistent thread, a run is created, the SDK auto-handles tool calls, and the response is printed.
-4. **Vision** – Images can be uploaded and sent as multimodal content — GPT-4o analyzes them natively.
-5. **Cleanup** – On exit the agent resource is deleted.
-
-## Next Steps
-
-- Add **Bing Grounding** for weather-aware outfit suggestions
-- Add **File Search** for fashion guide / lookbook RAG
-- Add **Connected Agent** for a shopping assistant sub-agent
-- Persist agent across sessions (avoid re-creation on each run)
-- Deploy as an API with **Azure Functions**
+> Prices are approximate (East US, early 2026). See [Azure pricing](https://azure.microsoft.com/pricing/) for current rates.

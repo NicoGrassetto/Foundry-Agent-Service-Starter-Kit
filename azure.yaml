@@ -1,7 +1,7 @@
 # yaml-language-server: $schema=https://raw.githubusercontent.com/Azure/azure-dev/main/schemas/v1.0/azure.yaml.json
-name: dressmate
+name: foundry-agent-starter
 metadata:
-  template: DressMate@0.0.1
+  template: foundry-agent-service-starter-kit@0.0.1
 
 infra:
   provider: bicep

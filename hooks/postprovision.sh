@@ -15,6 +15,7 @@ cat > .env <<EOF
 AZURE_AI_ENDPOINT=${ENDPOINT}
 BING_CONNECTION_ID=${BING_CONN}
 MODEL_NAME=${MODEL:-gpt-4o}
+AGENT_IDS={}
 EOF
 
 echo "==> .env written successfully."
