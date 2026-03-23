@@ -290,7 +290,7 @@ Bicep deploys:
 
 ## Resources
 
-- 📖 [Microsoft Foundry Agent Service docs](https://learn.microsoft.com/azure/ai-services/agents/) — overview, concepts, tools, quickstarts, tutorials, and API reference
+- 📖 [Microsoft Foundry Agent Service docs](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/) — overview, concepts, tools, quickstarts, tutorials, and API reference
 - 📖 [What is Foundry Agent Service?](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview) — explains what the service does, how agents work, and architectural concepts
 - 📖 [Quickstart: Deploy your first hosted agent](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstarts/quickstart-hosted-agent) — step-by-step guide to deploy a hosted agent using Azure Developer CLI
 - 📖 [Quickstart: Create a new Microsoft Foundry Agent Service project](https://learn.microsoft.com/azure/ai-foundry/agents/quickstart?pivots=ai-foundry-portal) — classic quickstart tutorial for creating and configuring an agent project
