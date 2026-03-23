@@ -280,14 +280,19 @@ Bicep deploys:
 > Prices are approximate (East US, early 2026). See [Azure pricing](https://azure.microsoft.com/pricing/) for current rates.
 
 > [!WARNING]
-> **This repository is provided as-is as a quick-start template and is intended for educational and prototyping purposes only.** 🚀
+> **This repository is provided as-is as a quick-start template.**
 >
 > 🔒 It is the deployer's sole responsibility to review, harden, and adapt this code to meet their organisation's security, compliance, privacy, and operational requirements before using it in any production environment.
 >
 > 🚫 The creator(s) of this repository bear **no responsibility** for any security vulnerabilities, data breaches, compliance violations, service outages, or any other damages arising from the use or deployment of this code.
 >
 > 🛠️ By using this repository you acknowledge that additional changes — including but not limited to network isolation, authentication hardening, secret management, logging, monitoring, and access control — may be required to achieve a production-ready security posture.
->
-> ⚡ **Use at your own risk.**
 
 ## Resources
+
+📖 [Azure AI Foundry Agent Service docs](https://learn.microsoft.com/azure/ai-services/agents/) — overview, concepts, tools, quickstarts, tutorials, and API reference
+📖 [What is Foundry Agent Service?](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview) — explains what the service does, how agents work, and architectural concepts
+📖 [Quickstart: Deploy your first hosted agent](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstarts/quickstart-hosted-agent) — step-by-step guide to deploy a hosted agent using Azure Developer CLI
+📖 [Quickstart: Create a new Foundry Agent Service project](https://learn.microsoft.com/azure/ai-foundry/agents/quickstart?pivots=ai-foundry-portal) — classic quickstart tutorial for creating and configuring an agent project
+📖 [Azure AI Foundry documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/) — general hub for Foundry including models, agents, and app templates
+🌐 [Azure AI Foundry Agent Service (product overview)](https://azure.microsoft.com/en-us/products/ai-agent-service/) — marketing + feature overview on the Azure site
