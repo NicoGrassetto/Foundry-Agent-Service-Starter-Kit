@@ -166,6 +166,7 @@ The following tools are offered by Azure AI Foundry Agent Service but are **not 
 | **Microsoft Fabric** | Query Microsoft Fabric data through the agent | [Pricing](https://azure.microsoft.com/pricing/details/microsoft-fabric/) |
 | **SharePoint** | Ground the agent on SharePoint site content | [Pricing](https://www.microsoft.com/microsoft-365/business/compare-all-plans) |
 | **Azure Blob Storage** | Access files stored in Azure Blob Storage | [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/) |
+| **Connected Agent** | Call another agent as a tool for multi-agent orchestration | Free (agent-to-agent) |
 | **Logic Apps** | Trigger Azure Logic Apps workflows as tools | [Pricing](https://azure.microsoft.com/pricing/details/logic-apps/) |
 
 ## Customising the Agent
