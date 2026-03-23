@@ -7,13 +7,20 @@ Welcome to the Microsoft Foundry Agent Service Starter Kit. It's a lightweight t
 
 Microsoft Foundry Agent Service is a powerful platform for building intelligent, tool-augmented AI agents. Designed for developers creating conversational AI workflows, it streamlines the process of orchestrating models with built-in tools — including Function calling, Code Interpreter, File Search, and Bing Grounding — into a single, cohesive interface. This eliminates the need for complex custom orchestration logic or manual tool integration, enabling scalable, low-latency agent interactions across diverse use cases. Whether you're building internal copilots, customer-facing assistants, or domain-specific reasoning agents, Microsoft Foundry Agent Service delivers production-ready results that integrate seamlessly into your business logic.
 
-Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/azure/ai-services/agents/overview).
+Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview).
 
 <p align="center">
-  <a href="#built-in-tools">Features</a> |
-  <a href="#quick-start-with-azd">Getting Started</a> |
+  <a href="#project-structure">Project Structure</a> |
+  <a href="#prerequisites">Prerequisites</a> |
+  <a href="#quick-start-with-azd">Quick Start</a> |
+  <a href="#manual-setup">Manual Setup</a> |
   <a href="#usage">Usage</a> |
+  <a href="#built-in-tools">Built-in Tools</a> |
   <a href="#customising-the-agent">Customization</a> |
+  <a href="#adding-new-tools">New Tools</a> |
+  <a href="#adding-new-agents">New Agents</a> |
+  <a href="#infrastructure">Infrastructure</a> |
+  <a href="#pricing">Pricing</a> |
   <a href="#resources">Resources</a>
 </p>
 
@@ -39,7 +46,7 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/a
 │   │   └── agent.prompty     # System prompt (Prompty format)
 │   └── tools/
 │       ├── __init__.py
-│       └── sample_data.py    # Sample Function tool (in-memory data query)
+│       └── math.py           # Sample Function tool (math operations)
 ├── hooks/
 │   └── postprovision.sh      # Auto-writes .env after azd provision
 ├── azure.yaml                # azd project descriptor
@@ -260,22 +267,12 @@ Bicep deploys:
 | **Model tokens** | $2.50 / 1M input, $10.00 / 1M output (GPT-4o) |
 | **Agent orchestration** | Free (thread management, tool dispatch) |
 
-### Built-in Tools
-
-| Tool | Cost |
-|---|---|
-| **Code Interpreter** | $0.03 / session |
-| **File Search** | $0.10 / GB vector store / day (first 1 GB free) |
-| **Bing Grounding** | $5.00 / 1K transactions |
-| **Function** | Free (runs in your process) |
-
 ### Infrastructure (idle)
 
-| Resource | Estimated monthly cost |
-|---|---|
-| Azure AI Services (S0) | $0 base (pay per token) |
-| Storage Account (LRS) | ~$0.02 / GB / month |
-| **Total fixed cost** | **< $1 / month** |
+| Resource | Description | Pricing |
+|---|---|---|
+| **Azure AI Services** | Pay per token | [Pricing](https://azure.microsoft.com/pricing/details/cognitive-services/) |
+| **Storage Account** | Thread state, files, vector stores | [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/) |
 
 > Prices are approximate (East US, early 2026). See [Azure pricing](https://azure.microsoft.com/pricing/) for current rates.
 
@@ -290,9 +287,8 @@ Bicep deploys:
 
 ## Resources
 
-- 📖 [Microsoft Foundry Agent Service docs](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/) — overview, concepts, tools, quickstarts, tutorials, and API reference
-- 📖 [What is Foundry Agent Service?](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview) — explains what the service does, how agents work, and architectural concepts
+- 📖 [What is Microsoft Foundry Agent Service?](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/overview) — explains what the service does, how agents work, and architectural concepts
 - 📖 [Quickstart: Deploy your first hosted agent](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/quickstarts/quickstart-hosted-agent) — step-by-step guide to deploy a hosted agent using Azure Developer CLI
 - 📖 [Quickstart: Create a new Microsoft Foundry Agent Service project](https://learn.microsoft.com/azure/ai-foundry/agents/quickstart?pivots=ai-foundry-portal) — classic quickstart tutorial for creating and configuring an agent project
-- 📖 [Microsoft Foundry documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/agents/) — general hub for Microsoft Foundry including models, agents, and app templates
+- 📖 [Microsoft Foundry documentation](https://learn.microsoft.com/en-us/azure/ai-foundry/) — general hub for Microsoft Foundry including models, agents, and app templates
 - 🌐 [Microsoft Foundry Agent Service (product overview)](https://azure.microsoft.com/en-us/products/ai-agent-service/) — marketing + feature overview on the Azure site
