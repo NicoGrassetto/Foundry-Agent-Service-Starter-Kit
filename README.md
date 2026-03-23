@@ -101,6 +101,22 @@ python -m src.setup     # creates agent, writes AGENT_ID to .env
 python -m src.main      # reuses the persisted agent — no re-creation
 ```
 
+### 5. Tear Down
+
+To delete all provisioned Azure resources:
+
+**With `azd`:**
+
+```bash
+azd down --purge
+```
+
+**Manual:**
+
+```bash
+az group delete --name my-agent-rg --yes --no-wait
+```
+
 ## Usage
 
 Start an interactive conversation with a registered agent:
