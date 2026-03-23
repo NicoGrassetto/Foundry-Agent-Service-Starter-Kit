@@ -1,6 +1,25 @@
 # Foundry Agent Service Starter Kit
 
-A starter template for building AI agents with **Azure AI Foundry Agent Service**. Comes pre-wired with four built-in tools (Function, Code Interpreter, File Search, Bing Grounding), Bicep infrastructure-as-code, and `azd` deployment automation.
+[![Open in GitHub Codespaces](https://img.shields.io/static/v1?style=for-the-badge&label=GitHub+Codespaces&message=Open&color=brightgreen&logo=github)](https://codespaces.new/NicoGrassetto/DressMate)
+[![Open in Dev Containers](https://img.shields.io/static/v1?style=for-the-badge&label=Dev+Containers&message=Open&color=blue&logo=visualstudiocode)](https://vscode.dev/redirect?url=vscode://ms-vscode-remote.remote-containers/cloneInVolume?url=https://github.com/NicoGrassetto/DressMate)
+
+Welcome to the Foundry Agent Service Starter Kit. It's a lightweight template for building AI agents powered by **Azure AI Foundry Agent Service**. This solution accelerator uses Azure AI Services, Azure Blob Storage, and Bing Grounding, with Bicep infrastructure-as-code and `azd` deployment automation.
+
+Azure AI Foundry Agent Service is a powerful platform for building intelligent, tool-augmented AI agents. Designed for developers creating conversational AI workflows, it streamlines the process of orchestrating models with built-in tools — including Function calling, Code Interpreter, File Search, and Bing Grounding — into a single, cohesive interface. This eliminates the need for complex custom orchestration logic or manual tool integration, enabling scalable, low-latency agent interactions across diverse use cases. Whether you're building internal copilots, customer-facing assistants, or domain-specific reasoning agents, Azure AI Foundry Agent Service delivers production-ready results that integrate seamlessly into your business logic.
+
+Learn more about [Azure AI Foundry Agent Service](https://learn.microsoft.com/azure/ai-services/agents/overview).
+
+<p align="center">
+  <a href="#built-in-tools">Features</a> |
+  <a href="#quick-start-with-azd">Getting Started</a> |
+  <a href="#manual-setup">Usage</a> |
+  <a href="#customising-the-agent">Customization</a> |
+  <a href="#pricing">Resources</a>
+</p>
+
+<p align="center">
+  <img src="assets/what-is-an-agent.png" alt="What is an Agent" width="800" />
+</p>
 
 ## Project Structure
 
@@ -82,14 +101,56 @@ python -m src.setup     # creates agent, writes AGENT_ID to .env
 python -m src.main      # reuses the persisted agent — no re-creation
 ```
 
+## Usage
+
+Start an interactive conversation with a registered agent:
+
+```bash
+python -m src.main [agent-key]
+```
+
+- If only one agent is registered, the key can be omitted.
+- If multiple agents exist, specify which one to use (e.g. `python -m src.main math`).
+- Type your message and press Enter to chat. The agent will use its configured tools automatically.
+- Type `quit`, `exit`, or `q` to end the session.
+
+**Docker:**
+
+```bash
+docker build -t foundry-agent .
+docker run --env-file .env -it foundry-agent
+```
+
+To run a specific agent in Docker:
+
+```bash
+docker run --env-file .env -it foundry-agent python -m src.main math
+```
+
 ## Built-in Tools
 
-| Tool | Description |
-|---|---|
-| **Function** | Custom Python function called by the agent (sample: `query_items`) |
-| **Code Interpreter** | Sandboxed Python execution for data analysis and calculations |
-| **File Search** | Managed RAG over uploaded documents (vector store) |
-| **Bing Grounding** | Web search for real-time information |
+### Implemented
+
+| Tool | Description | Pricing |
+|---|---|---|
+| **Function** | Custom Python function called by the agent (sample: `query_items`) | Free (runs in your process) |
+| **Code Interpreter** | Sandboxed Python execution for data analysis and calculations | [Pricing](https://azure.microsoft.com/pricing/details/ai-studio/) |
+| **File Search** | Managed RAG over uploaded documents (vector store) | [Pricing](https://azure.microsoft.com/pricing/details/ai-studio/) |
+| **Bing Grounding** | Web search for real-time information | [Pricing](https://www.microsoft.com/en-us/bing/apis/grounding-pricing) |
+
+### Available (not implemented)
+
+The following tools are offered by Azure AI Foundry Agent Service but are **not yet wired up** in this starter kit:
+
+| Tool | Description | Pricing |
+|---|---|---|
+| **Azure AI Search** | Enterprise RAG over Azure AI Search indexes with integrated vectorisation | [Pricing](https://azure.microsoft.com/pricing/details/search/) |
+| **Azure Functions** | Call an Azure Function as a tool (serverless compute) | [Pricing](https://azure.microsoft.com/pricing/details/functions/) |
+| **OpenAPI** | Call any REST API described by an OpenAPI 3.x spec | Free (calls your API) |
+| **Microsoft Fabric** | Query Microsoft Fabric data through the agent | [Pricing](https://azure.microsoft.com/pricing/details/microsoft-fabric/) |
+| **SharePoint** | Ground the agent on SharePoint site content | [Pricing](https://www.microsoft.com/microsoft-365/business/compare-all-plans) |
+| **Azure Blob Storage** | Access files stored in Azure Blob Storage | [Pricing](https://azure.microsoft.com/pricing/details/storage/blobs/) |
+| **Logic Apps** | Trigger Azure Logic Apps workflows as tools | [Pricing](https://azure.microsoft.com/pricing/details/logic-apps/) |
 
 ## Customising the Agent
 
@@ -204,3 +265,5 @@ Bicep deploys:
 | **Total fixed cost** | **< $1 / month** |
 
 > Prices are approximate (East US, early 2026). See [Azure pricing](https://azure.microsoft.com/pricing/) for current rates.
+
+## Resources
