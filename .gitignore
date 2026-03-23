@@ -11,6 +11,9 @@ env/
 # Environment
 .env
 
+# Agent state
+.agent_id
+
 # IDE
 .vscode/
 .idea/
