@@ -12,9 +12,9 @@ Learn more about [Azure AI Foundry Agent Service](https://learn.microsoft.com/az
 <p align="center">
   <a href="#built-in-tools">Features</a> |
   <a href="#quick-start-with-azd">Getting Started</a> |
-  <a href="#manual-setup">Usage</a> |
+  <a href="#usage">Usage</a> |
   <a href="#customising-the-agent">Customization</a> |
-  <a href="#pricing">Resources</a>
+  <a href="#resources">Resources</a>
 </p>
 
 <p align="center">
@@ -237,10 +237,6 @@ The following tools are offered by Azure AI Foundry Agent Service but are **not 
    ```bash
    python -m src.main travel
    ```
-
-## Roadmap
-
-- **Microsoft Agent Framework integration** — This project will migrate to the [Microsoft Agent Framework](https://github.com/microsoft/agents) once it reaches General Availability (GA), adopting its unified protocol and multi-agent orchestration capabilities.
 
 ## Infrastructure
 
