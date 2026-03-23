@@ -14,8 +14,8 @@ from src.tools import add
 # - model:   Model deployment name (can be overridden per agent).
 # - tools:   Set of callable functions exposed via FunctionTool.
 AGENT_REGISTRY: dict = {
-    "math": {
-        "name": "Math Agent",
+    "default": {
+        "name": "Agent",
         "prompt": "agent.prompty",
         "model": None,         # None → falls back to MODEL_NAME from config
         "tools": {add},

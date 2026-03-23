@@ -14,7 +14,7 @@ BING_CONNECTION_ID: str = os.environ.get("BING_CONNECTION_ID", "")
 MODEL_NAME: str = os.environ.get("MODEL_NAME", "gpt-4o")
 
 # Agent IDs persisted by `python -m src.setup`.
-# Stored as JSON: {"math": "asst_abc", "other": "asst_xyz"}
+# Stored as JSON: {"default": "asst_abc", "other": "asst_xyz"}
 AGENT_IDS: dict = json.loads(os.environ.get("AGENT_IDS", "{}"))
 
 # ── Paths ───────────────────────────────────────────────────────────

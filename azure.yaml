@@ -8,6 +8,9 @@ infra:
   path: infra
 
 hooks:
+  preprovision:
+    shell: sh
+    run: hooks/preprovision.sh
   postprovision:
     shell: sh
     run: hooks/postprovision.sh

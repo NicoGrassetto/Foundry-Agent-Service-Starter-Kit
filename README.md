@@ -12,13 +12,13 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/e
 <p align="center">
   <a href="#project-structure">Project Structure</a> |
   <a href="#prerequisites">Prerequisites</a> |
-  <a href="#quick-start-with-azd">Quick Start</a> |
+  <a href="#quick-start">Quick Start</a> |
   <a href="#manual-setup">Manual Setup</a> |
   <a href="#usage">Usage</a> |
   <a href="#built-in-tools">Built-in Tools</a> |
-  <a href="#customising-the-agent">Customization</a> |
-  <a href="#adding-new-tools">New Tools</a> |
-  <a href="#adding-new-agents">New Agents</a> |
+  <a href="#customization">Customization</a> |
+  <a href="#new-tools">New Tools</a> |
+  <a href="#new-agents">New Agents</a> |
   <a href="#infrastructure">Infrastructure</a> |
   <a href="#pricing">Pricing</a> |
   <a href="#resources">Resources</a>
@@ -48,6 +48,7 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/e
 │       ├── __init__.py
 │       └── math.py           # Sample Function tool (math operations)
 ├── hooks/
+│   ├── preprovision.sh       # Auto-detects max GPT-4o quota before deploy
 │   └── postprovision.sh      # Auto-writes .env after azd provision
 ├── azure.yaml                # azd project descriptor
 ├── .env.example
@@ -63,7 +64,7 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/e
 - [Azure Developer CLI (`azd`)](https://learn.microsoft.com/azure/developer/azure-developer-cli/install-azd) (optional, for one-command deploy)
 - Python 3.9+
 
-## Quick Start with `azd`
+## Quick Start
 
 ```bash
 azd up                  # provisions infra + writes .env via post-provision hook
@@ -133,7 +134,7 @@ python -m src.main [agent-key]
 ```
 
 - If only one agent is registered, the key can be omitted.
-- If multiple agents exist, specify which one to use (e.g. `python -m src.main math`).
+- If multiple agents exist, specify which one to use (e.g. `python -m src.main default`).
 - Type your message and press Enter to chat. The agent will use its configured tools automatically.
 - Type `quit`, `exit`, or `q` to end the session.
 
@@ -147,7 +148,7 @@ docker run --env-file .env -it foundry-agent
 To run a specific agent in Docker:
 
 ```bash
-docker run --env-file .env -it foundry-agent python -m src.main math
+docker run --env-file .env -it foundry-agent python -m src.main default
 ```
 
 ## Built-in Tools
@@ -176,14 +177,14 @@ The following tools are offered by Microsoft Foundry Agent Service but are **not
 | **Connected Agent** | Call another agent as a tool for multi-agent orchestration | Free (agent-to-agent) |
 | **Logic Apps** | Trigger Azure Logic Apps workflows as tools | [Pricing](https://azure.microsoft.com/pricing/details/logic-apps/) |
 
-## Customising the Agent
+## Customization
 
 1. **System prompt** — Edit [src/prompts/agent.prompty](src/prompts/agent.prompty)
-2. **Function tool** — Replace `src/tools/sample_data.py` with your own domain logic
+2. **Function tool** — Replace `src/tools/math.py` with your own domain logic
 3. **Agent name** — Set `AGENT_NAME` in `.env`
 4. **Model** — Set `MODEL_NAME` in `.env` (default: `gpt-4o`)
 
-## Adding New Tools
+## New Tools
 
 1. Create a new Python file under `src/tools/` (e.g. `src/tools/weather.py`) and define one or more functions. Each function **must** have a docstring with `:param` and `:return` tags — the agent uses these to understand the function signature.
 
@@ -210,7 +211,7 @@ The following tools are offered by Microsoft Foundry Agent Service but are **not
    from src.tools import add, get_weather
 
    AGENT_REGISTRY: dict = {
-       "math": {
+       "default": {
            ...
            "tools": {add, get_weather},
        },
@@ -219,7 +220,7 @@ The following tools are offered by Microsoft Foundry Agent Service but are **not
 
 4. Run `python -m src.setup` to recreate the agent with the new tool attached.
 
-## Adding New Agents
+## New Agents
 
 1. Create a Prompty file for the agent's system prompt in `src/prompts/` (e.g. `src/prompts/travel.prompty`).
 
@@ -227,7 +228,7 @@ The following tools are offered by Microsoft Foundry Agent Service but are **not
 
    ```python
    AGENT_REGISTRY: dict = {
-       "math": { ... },
+       "default": { ... },
        "travel": {
            "name": "Travel Agent",
            "prompt": "travel.prompty",
