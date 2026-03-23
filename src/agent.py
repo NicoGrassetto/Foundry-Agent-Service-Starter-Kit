@@ -1,6 +1,6 @@
 """DressMate – Azure AI Agent Service prototype.
 
-Uses the azure-ai-agents SDK to run a styling assistant on the
+Uses the azure-ai-agents SDK to run an assistant on the
 Azure Agent Service data-plane (threads, runs, tool execution).
 """
 
