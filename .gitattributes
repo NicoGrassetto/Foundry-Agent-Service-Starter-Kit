@@ -1,0 +1,3 @@
+# Ensure shell scripts always use LF line endings, even on Windows checkouts.
+# This prevents "invalid option name" errors when azd runs hook scripts.
+*.sh text eol=lf
