@@ -49,7 +49,7 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/e
 │       └── math.py           # Sample Function tool (math operations)
 ├── hooks/
 │   ├── preprovision.sh       # Auto-detects max GPT-4o quota before deploy
-│   └── postprovision.sh      # Auto-writes .env after azd provision
+│   └── postprovision.sh      # Auto-writes .env and creates agent(s) after azd provision
 ├── azure.yaml                # azd project descriptor
 ├── .env.example
 ├── .gitignore
@@ -67,8 +67,7 @@ Learn more about [Microsoft Foundry Agent Service](https://learn.microsoft.com/e
 ## Quick Start
 
 ```bash
-azd up                  # provisions infra + writes .env via post-provision hook
-python -m src.setup     # creates the agent on the service, saves AGENT_ID to .env
+azd up                  # provisions infra, writes .env, and creates agent(s) via post-provision hook
 python -m src.main      # runs the conversation loop against the persisted agent
 ```
 

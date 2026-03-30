@@ -19,3 +19,9 @@ AGENT_IDS={}
 EOF
 
 echo "==> .env written successfully."
+
+echo "==> Post-provision: installing Python dependencies..."
+pip install -r requirements.txt
+
+echo "==> Post-provision: creating agent(s) via src.setup..."
+python -m src.setup
