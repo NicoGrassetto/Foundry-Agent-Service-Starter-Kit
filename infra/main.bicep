@@ -173,7 +173,7 @@ resource modelDeployment 'Microsoft.CognitiveServices/accounts/deployments@2025-
   parent: aiServices
   name: 'gpt-4o'
   sku: {
-    name: 'Standard'
+    name: 'GlobalStandard'
     capacity: deploymentCapacity
   }
   properties: {
